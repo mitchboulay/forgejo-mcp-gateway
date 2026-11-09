@@ -55,7 +55,10 @@ class Routes:
             **_NO_STORE,
             "Content-Security-Policy": "default-src 'none'; style-src 'unsafe-inline'; img-src 'self' data:; "
             f"form-action 'self' {' '.join(redirect_origins)}; frame-ancestors 'none'; base-uri 'none'",
-            "Referrer-Policy": "no-referrer",
+            # same-origin, not no-referrer: with no-referrer browsers send "Origin: null" on the
+            # consent form's own post, which the origin check must refuse. Other sites still get no
+            # referrer, so the consent URL never leaks to Forgejo or the client.
+            "Referrer-Policy": "same-origin",
             "X-Content-Type-Options": "nosniff",
             "X-Frame-Options": "DENY",
         }

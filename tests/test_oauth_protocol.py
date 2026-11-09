@@ -80,7 +80,7 @@ async def test_consent_is_bound_to_the_browser_that_started_it(flow: Flow) -> No
     assert page.status_code == 200
     assert page.headers["x-frame-options"] == "DENY"
     assert "frame-ancestors 'none'" in page.headers["content-security-policy"]
-    assert page.headers["referrer-policy"] == "no-referrer"
+    assert page.headers["referrer-policy"] == "same-origin"
 
 
 async def test_cross_origin_consent_post_is_refused(flow: Flow) -> None:
