@@ -71,7 +71,8 @@ async def _connect(http: httpx2.AsyncClient, live: LiveTarget, *, forgejo_token:
     page = await http.get(consent_url, headers=headers)
     assert page.status_code == 200
     assert "Connect ChatGPT to Forgejo" in page.text
-    assert (await http.get(consent_url)).status_code == 404, "another browser must not see the request"
+    async with httpx2.AsyncClient(timeout=60) as other_browser:  # never received the cookie
+        assert (await other_browser.get(consent_url)).status_code == 404, "another browser must not see the request"
 
     posted = await http.post(
         consent_url,
