@@ -1,0 +1,16 @@
+<h1>Connect $client to Forgejo</h1>
+<p>$client will act as you on <strong>$forgejo</strong>, with exactly the permissions of the token you give it.</p>
+<ol>
+<li>Open <a href="$forgejo/user/settings/applications" target="_blank" rel="noopener noreferrer">Forgejo → Settings → Applications</a>.</li>
+<li>Generate a token. Choose the repositories and the read or write scopes $client should have. It needs at least <code>read:user</code>.</li>
+<li>Paste the token here.</li>
+</ol>
+<form method="post" action="/oauth/consent/$request_id">
+<label for="token">Forgejo access token</label>
+<input id="token" name="token" type="password" autocomplete="off" spellcheck="false" autofocus>
+$error
+<div class="actions">
+<button type="submit" name="decision" value="allow" class="primary">Connect</button>
+<button type="submit" name="decision" value="deny" formnovalidate>Cancel</button>
+</div>
+</form>

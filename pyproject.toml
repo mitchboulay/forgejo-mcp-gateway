@@ -1,0 +1,77 @@
+[project]
+name = "forgejo-mcp-gateway"
+version = "0.1.0"
+description = "A multi-user MCP gateway for Forgejo: OAuth for hosted assistants, token pass-through for everything else."
+readme = "README.md"
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+requires-python = ">=3.12"
+keywords = ["forgejo", "gitea", "mcp", "model-context-protocol", "oauth"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Web Environment",
+    "Framework :: AsyncIO",
+    "Intended Audience :: Developers",
+    "Intended Audience :: System Administrators",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Version Control :: Git",
+]
+dependencies = [
+    "mcp==2.3.0",
+    "httpx>=0.28,<1",
+    "starlette>=1.0,<2",
+    "uvicorn[standard]>=0.34,<1",
+    "pydantic>=2.10,<3",
+    "pydantic-settings>=2.7,<3",
+    "cryptography>=44",
+]
+
+[project.urls]
+Source = "https://github.com/mitchboulay/forgejo-mcp-gateway"
+Issues = "https://github.com/mitchboulay/forgejo-mcp-gateway/issues"
+
+[project.scripts]
+forgejo-mcp-gateway = "forgejo_mcp_gateway.__main__:main"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3",
+    "pytest-asyncio>=0.25",
+    "respx>=0.22",
+    "ruff>=0.9",
+    "mypy>=1.14",
+]
+
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/forgejo_mcp_gateway"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+markers = ["live: runs against a real Forgejo (needs FORGEJO_TEST_URL and FORGEJO_TEST_TOKEN)"]
+addopts = "-m 'not live'"
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "S", "SIM", "RUF", "ASYNC", "PT"]
+ignore = ["S101"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S105", "S106"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+packages = ["forgejo_mcp_gateway"]
+mypy_path = "src"

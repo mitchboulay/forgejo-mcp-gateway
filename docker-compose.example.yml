@@ -1,0 +1,21 @@
+# Run the gateway next to Forgejo. Publish only this service to the internet,
+# and only the paths in the README's "Exposing it" section.
+services:
+  forgejo-mcp-gateway:
+    image: ghcr.io/mitchboulay/forgejo-mcp-gateway:0.1.0
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - "8080:8080"
+    volumes:
+      - gateway-data:/data
+    read_only: true
+    tmpfs:
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+
+volumes:
+  gateway-data:
