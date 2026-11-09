@@ -41,7 +41,11 @@ if docker manifest inspect "${IMAGE}:${VERSION}" >/dev/null 2>&1; then
   exit 1
 fi
 
+# Multi-platform builds need a docker-container builder; the default docker driver can't do them.
+BUILDER=forgejo-mcp-gateway-release
+docker buildx inspect "${BUILDER}" >/dev/null 2>&1 || docker buildx create --name "${BUILDER}" --driver docker-container >/dev/null
+
 echo "==> build and push ${IMAGE}:${VERSION} and :latest (linux/amd64, linux/arm64)"
-docker buildx build --platform linux/amd64,linux/arm64 "${LABELS[@]}" \
+docker buildx build --builder "${BUILDER}" --platform linux/amd64,linux/arm64 "${LABELS[@]}" \
   -t "${IMAGE}:${VERSION}" -t "${IMAGE}:latest" --push .
 docker buildx imagetools inspect "${IMAGE}:${VERSION}" | sed -n '1,12p'
